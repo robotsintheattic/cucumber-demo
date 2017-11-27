@@ -1,5 +1,7 @@
 <?php
 
+require("Thing.php");
+
 use Behat\Behat\Context\ClosuredContextInterface,
     Behat\Behat\Context\TranslatedContextInterface,
     Behat\Behat\Context\BehatContext,
@@ -44,7 +46,7 @@ class FeatureContext extends BehatContext
      }
 
      /** @Then /^I should get:$/ */
-     public function iShouldGet(PyStringNode $string)
+     public function iShouldGetList(PyStringNode $string)
      {
        if ((string) $string !== $this->output) {
          throw new Exception(
@@ -66,12 +68,28 @@ class FeatureContext extends BehatContext
 //
 // Place your definition and hook methods here:
 //
-//    /**
-//     * @Given /^I have done something with "([^"]*)"$/
-//     */
-//    public function iHaveDoneSomethingWith($argument)
-//    {
-//        doSomethingWith($argument);
-//    }
+  private $Thing;
+   /**
+    * @Given /^I have the number (\d+) and the number (\d+)$/
+    */
+   public function iHaveTheNumberAndTheNumber($a, $b)
+   {
+       $this->Thing = new Thing($a, $b);
+   }
+   /**
+    * @When /^I add them together$/
+    */
+    public function iAddThemTogether() {
+      $this->Thing->add();
+    }
+  /**
+   * @Then /^I should get (\d+)$/
+   */
+   public function iShouldGetSum($sum) {
+     if ($this->Thing->sum != $sum) {
+       throw new Exception("Actual sum: ".$this->Thing->sum);
+     }
+     $this->Thing->display();
+   }
 //
 }
